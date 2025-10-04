@@ -3,6 +3,7 @@ use graph1::primitives::point::Point;
 use graph1::utils::color::palettes::RetroNeon;
 use graph1_wasm_demo::demo::user_data::DemoUserData;
 use minifb::{Key, Window, WindowOptions};
+use graph1::utils::color::adapters::rgba_to_0rgb;
 
 /// Width of the window, in pixels
 const WIN_WIDTH: u32 = 1600;
@@ -92,9 +93,8 @@ fn main() {
         panic!("{}", e);
     });
 
-    window.set_target_fps(60);
-    window.set_position(800,500);
-
+    window.set_target_fps(100);
+    window.set_position(100, 100);
 
     // NB! [ GPU ]======================================================================
     ctx.gpu_context.set_enabled(GPU);
@@ -103,7 +103,7 @@ fn main() {
     // MAIN LOOP
     // **************
     while window.is_open() && !window.is_key_down(Key::Escape) && !window.is_key_down(Key::Q) {
-        // let frame_start = Instant::now();
+        // let frame_start = std::time::Instant::now();
         // println!(">>> frame_count: {} ", ani_ctx.frame_count);
 
         // =====================================================================================
@@ -186,7 +186,6 @@ fn main() {
             println!("Window resized to: {}x{}", width, height);
         }
 
-
         // let start = Instant::now(); // Start timing
         // ===[ DEMO SELECTION ]===========================
 
@@ -195,14 +194,12 @@ fn main() {
         // let duration = start.elapsed(); // Measure elapsed time
         // println!("[cube] duration:  {:?}", duration.as_micros());
 
-
         // graph1_wasm_demo::demo::d_004_bouncy::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_001_basic_concepts_pt1::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_007_shapes_and_quadrants::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_005_alpha::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_006_luminance_vs_intensity::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_001_basic_concepts_pt1::render_frame(&mut ctx);
-
 
         ctx.alpha.method = graph1::core::context::alpha::AlphaMethod::Int;
         ctx.alpha.enabled = true;
@@ -214,26 +211,23 @@ fn main() {
         // graph1_wasm_demo::demo::d_014_brushes::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_013_text::render_frame(&mut ctx);
 
-
         // graph1_wasm_demo::demo::d_015_transformations::render_frame(&mut ctx);
 
         // graph1_wasm_demo::demo::d_005_alpha::render_frame(&mut ctx);
 
         // graph1_wasm_demo::demo::d_014_brushes::render_frame(&mut ctx);
 
-
-
         // let duration = start.elapsed(); // Measure elapsed time
         // println!("Frame duration:  {:?}", duration.as_micros());
 
         // ===[ COLOR ADAPTER ]===========================
         // let start = Instant::now();
-        // let stats = rgba_to_0rgb(
-        //     &mut output_buf_0rgb,
-        //     &mut ctx.frame_buf,
-        //     ctx.num_threads,
-        //     false,
-        // );
+        let _ = rgba_to_0rgb(
+            &mut output_buf_0rgb,
+            &mut ctx.frame_buf,
+            ctx.num_threads,
+            false,
+        );
         // let duration = start.elapsed();
         // println!(
         //     "[ threads: {} | fill::buffer() ] Execution time: {} ms, buffer len:{} ",
@@ -257,7 +251,7 @@ fn main() {
         ctx.frame_count += 1;
         //
         //
-        // println!("[frame] duration:  {:?}", frame_start.elapsed().as_micros());
+        // println!("[frame] duration:  {:?}, fps: {:.0}", frame_start.elapsed().as_micros(), 1.0/frame_start.elapsed().as_secs_f64());
         //
         //
     } // main while loop

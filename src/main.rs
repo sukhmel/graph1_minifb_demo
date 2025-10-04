@@ -1,15 +1,13 @@
-use std::time::Instant;
 use graph1::core::context::{GraphContext, WindowContext};
 use graph1::primitives::point::Point;
-use graph1::utils::color::adapters::rgba_to_0rgb;
 use graph1::utils::color::palettes::RetroNeon;
 use graph1_wasm_demo::demo::user_data::DemoUserData;
 use minifb::{Key, Window, WindowOptions};
 
 /// Width of the window, in pixels
-const WIN_WIDTH: u32 = 640;
+const WIN_WIDTH: u32 = 1600;
 /// Height of the window, in pixels
-const WIN_HEIGHT: u32 = 480;
+const WIN_HEIGHT: u32 = 1200;
 
 // const NUM_THREADS: usize = 6;
 const NUM_THREADS: usize = 6;
@@ -68,6 +66,7 @@ fn main() {
         GraphContext::new(win_ctx, true, 1, None, NUM_THREADS, None);
     // let mut ctx:GraphContext<DemoUserData> = GraphContext::new(win_ctx,  true,false, None, 1);
 
+    ctx.win.background_color = 0x00_00_00_ff;
     ctx.user_data.bouncy.dx = 2;
     ctx.user_data.bouncy.dy = 2;
     ctx.alpha.method = graph1::core::context::alpha::AlphaMethod::Float;
@@ -103,7 +102,7 @@ fn main() {
 
     // MAIN LOOP
     // **************
-    while window.is_open() && !window.is_key_down(Key::Escape) {
+    while window.is_open() && !window.is_key_down(Key::Escape) && !window.is_key_down(Key::Q) {
         // let frame_start = Instant::now();
         // println!(">>> frame_count: {} ", ani_ctx.frame_count);
 
@@ -111,6 +110,69 @@ fn main() {
         // Handle window resizing
         // =====================================================================================
 
+        if window.is_key_released(Key::H) {
+            ctx.user_data.intro.z_heatmap ^= true;
+        }
+        if window.is_key_released(Key::A) {
+            ctx.user_data.intro.autoscale ^= true;
+        }
+        if window.is_key_released(Key::X) {
+            ctx.user_data.intro.rotate_x ^= true;
+        }
+        if window.is_key_released(Key::Y) {
+            ctx.user_data.intro.rotate_y ^= true;
+        }
+        if window.is_key_released(Key::Z) {
+            ctx.user_data.intro.rotate_z ^= true;
+        }
+        if window.is_key_released(Key::B) {
+            ctx.user_data.intro.x_log_y ^= true;
+        }
+        if window.is_key_released(Key::U) {
+            ctx.user_data.intro.x_log ^= true;
+        }
+        if window.is_key_released(Key::V) {
+            ctx.user_data.intro.y_log ^= true;
+        }
+        if window.is_key_released(Key::W) {
+            ctx.user_data.intro.z_log ^= true;
+        }
+        if window.is_key_released(Key::S) {
+            ctx.user_data.intro.shift_z ^= true;
+        }
+        if window.is_key_released(Key::C) {
+            ctx.user_data.intro.y_zero_centered ^= true;
+        }
+        if window.is_key_released(Key::Up) {
+            ctx.user_data.intro.z_shift += 10.0;
+        }
+        if window.is_key_released(Key::Down) {
+            ctx.user_data.intro.z_shift -= 10.0;
+        }
+        if window.is_key_released(Key::Right) {
+            ctx.user_data.intro.variance += 1.0;
+        }
+        if window.is_key_released(Key::Left) {
+            ctx.user_data.intro.variance -= 1.0;
+        }
+        if window.is_key_released(Key::RightBracket) {
+            ctx.user_data.intro.x_log_base += 1.0;
+        }
+        if window.is_key_released(Key::LeftBracket) {
+            ctx.user_data.intro.x_log_base -= 1.0;
+        }
+        if window.is_key_released(Key::PageUp) {
+            ctx.user_data.intro.scale *= 1.1;
+        }
+        if window.is_key_released(Key::Home) {
+            ctx.user_data.intro.scale *= 10.0;
+        }
+        if window.is_key_released(Key::PageDown) {
+            ctx.user_data.intro.scale /= 1.1;
+        }
+        if window.is_key_released(Key::End) {
+            ctx.user_data.intro.scale /= 10.0;
+        }
         // Check if the window size has changed
         let (new_width, new_height) = window.get_size();
 
@@ -128,7 +190,7 @@ fn main() {
         // let start = Instant::now(); // Start timing
         // ===[ DEMO SELECTION ]===========================
 
-        // graph1_wasm_demo::demo::d_000_intro::render_frame(&mut ctx);
+        graph1_wasm_demo::demo::d_000_intro::render_frame(&mut ctx);
 
         // let duration = start.elapsed(); // Measure elapsed time
         // println!("[cube] duration:  {:?}", duration.as_micros());
@@ -150,7 +212,7 @@ fn main() {
         // graph1_wasm_demo::demo::d_012_grid::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_000_intro::render_frame(&mut ctx);
         // graph1_wasm_demo::demo::d_014_brushes::render_frame(&mut ctx);
-        graph1_wasm_demo::demo::d_013_text::render_frame(&mut ctx);
+        // graph1_wasm_demo::demo::d_013_text::render_frame(&mut ctx);
 
 
         // graph1_wasm_demo::demo::d_015_transformations::render_frame(&mut ctx);
@@ -166,12 +228,12 @@ fn main() {
 
         // ===[ COLOR ADAPTER ]===========================
         // let start = Instant::now();
-        let stats = rgba_to_0rgb(
-            &mut output_buf_0rgb,
-            &mut ctx.frame_buf,
-            ctx.num_threads,
-            false,
-        );
+        // let stats = rgba_to_0rgb(
+        //     &mut output_buf_0rgb,
+        //     &mut ctx.frame_buf,
+        //     ctx.num_threads,
+        //     false,
+        // );
         // let duration = start.elapsed();
         // println!(
         //     "[ threads: {} | fill::buffer() ] Execution time: {} ms, buffer len:{} ",
